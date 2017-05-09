@@ -1,0 +1,45 @@
+{
+  "name": "keymaker",
+  "version": "0.0.0",
+  "description": "Keymaker, in charge of giving access to the doors of our reality.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "node_modules/.bin/standard",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryan Kahn <kahn@runnable.com>",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "6.10.2",
+    "npm": "3.10.10"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach"
+    ]
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "bunyan": "^1.8.8",
+    "continuation-local-storage": "^3.2.0",
+    "dotenv": "^4.0.0",
+    "error-cat": "^3.0.0",
+    "joi": "^9.0.4",
+    "lodash": "^4.17.4",
+    "node-vault": "^0.5.6",
+    "ponos": "^5.8.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "sinon-as-promised": "^4.0.2",
+    "standard": "^10.0.2"
+  }
+}

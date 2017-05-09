@@ -1,0 +1,3 @@
+exchanges:
+    org.user.ssh-key.requested@/:
+        type: fanout
