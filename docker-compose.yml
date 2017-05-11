@@ -8,6 +8,7 @@ services:
     links:
       - vault
       - rabbit
+      - pg
     environment:
       - NODE_ENV=development
       - RABBITMQ_PORT=5672
@@ -16,6 +17,9 @@ services:
       - RABBITMQ_HOSTNAME=rabbit
       - VAULT_ENDPOINT=http://vault:8200
       - VAULT_TOKEN=f3b7d5b3-5ebf-4474-a312-bb98e5e240c0
+      - POSTGRES_POOL_MIN=1
+      - POSTGRES_POOL_MAX=20
+      - POSTGRES_CONNECT_STRING=postgres://big_poppa@pg/big_poppa
 
   vault:
     image: vault:0.6.4
@@ -39,3 +43,8 @@ services:
     volumes:
       - ./config:/config
     command: apply -b http://rabbit:15672/ -u guest -p guest -c /config/rabbit-config.yaml -w 60
+
+  pg:
+    build:
+      context: .
+      dockerfile: config/postgres-dockerfile
