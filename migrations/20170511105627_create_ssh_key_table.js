@@ -5,8 +5,8 @@ exports.up = function (knex, Promise) {
       table.integer('user_id')
       table.primary(['org_id', 'user_id'])
       table.integer('github_key_id')
-      table.string('keyName')
-      table.string('keyFingerprint')
+      table.string('key_name')
+      table.string('key_fingerprint')
       table.timestamps(true) // Adds default `created_at` `updated_at` timestamps
     })
 }
