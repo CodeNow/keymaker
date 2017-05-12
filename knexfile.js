@@ -1,5 +1,6 @@
-// Update with your config settings.
+require('dotenv').config({ path: './config/.env' })
 
+// Update with your config settings.
 module.exports = {
   client: 'pg',
   connection: process.env.POSTGRES_CONNECT_STRING,

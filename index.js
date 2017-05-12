@@ -4,10 +4,10 @@ require('dotenv').config({ path: './config/.env' })
 
 const log = require('./lib/util/logger')
 const workerServer = require('./lib/worker')
-const rabbitmq = require('./util/rabbitmq')
+const rabbitmq = require('./lib/util/rabbitmq')
 
 rabbitmq.connect()
-  .then(workerServer.start)
+  .then(workerServer.start.bind(workerServer))
   .then(() => {
     log.info('all components started')
   })

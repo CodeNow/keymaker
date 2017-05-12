@@ -1,6 +1,0 @@
-FROM runnable/postgres:9.4
-
-ENV POSTGRES_USER keymaker
-ENV POSTGRES_DB keymaker
-
-RUN gosu postgres /init.sh

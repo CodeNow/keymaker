@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "node_modules/.bin/standard",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint && npm run e2e",
+    "unit": "mocha test/unit --recursive --async-only",
+    "e2e": "mocha test/e2e --recursive --async-only"
   },
   "author": "Ryan Kahn <kahn@runnable.com>",
   "repository": "https://github.com/CodeNow/keymaker",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "knex-migrate": "^1.3.0",
     "mocha": "^3.2.0",
     "pre-commit": "^1.2.2",
     "sinon": "^1.17.7",
