@@ -17,6 +17,11 @@ services:
       - POSTGRES_POOL_MIN=1
       - POSTGRES_POOL_MAX=20
       - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
+      - GITHUB_TOKEN=testing
+      - GITHUB_PROTOCOL=http
+      - GITHUB_VARNISH_HOST=github
+      - GITHUB_VARNISH_PORT=3000
+      - LOG_LEVEL=0
 
   keymaker_test:
     build:
@@ -57,3 +62,9 @@ services:
     ports:
       - "5433:5432"
 
+  github:
+    build:
+      context: test/e2e/mocks/github
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

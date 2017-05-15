@@ -41,8 +41,8 @@ describe('E2E: org.user.ssh-key.requested', () => {
     })
       .then(waitForSaveInPSQL)
       .then((sshKey) => {
-        console.log(sshKey)
         expect(sshKey.keyName).to.equal(keyName)
+        expect(sshKey.githubKeyId).to.equal(68238128)
       })
   })
 })
