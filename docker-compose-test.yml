@@ -52,7 +52,7 @@ services:
       - "15672:15672"
 
   rabbitpuppy:
-    image: meltwater/rabbit-puppy:latest
+    image: meltwater/rabbit-puppy:0.3.0
     links:
       - rabbit
     volumes:
