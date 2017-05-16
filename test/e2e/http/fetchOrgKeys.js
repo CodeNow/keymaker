@@ -2,15 +2,16 @@
 
 require('dotenv').config({ path: './config/.env' })
 
-const request = require('request-promise')
-// const expect = require('chai').expect
+const expect = require('chai').expect
 const Promise = require('bluebird')
+const request = require('request-promise')
 const SSHKey = require('../../../lib/models/sshKey')
 
 require('sinon-as-promised')(Promise)
 
 describe('E2E: fetchOrgKeys', () => {
   const orgId = Math.floor(Math.random() * 100000)
+  const accessToken = Math.floor(Math.random() * 100000)
   const keys = [
     {
       githubAccessToken: 'githubAccessToken' + Math.floor(Math.random() * 100000),
@@ -54,11 +55,14 @@ describe('E2E: fetchOrgKeys', () => {
     })
   })
 
-  it('should return the keys and validate all the keys exist for multiple users', function () {
+  it('should return only keys that exist in github', function () {
     this.timeout(10000)
-    return request.get(`http://${process.env.KEYMAKER_HOST}:${process.env.KEYMAKER_PORT}/organizations/${orgId}/keys`)
+    return request.get(`http://${process.env.KEYMAKER_HOST}:${process.env.KEYMAKER_PORT}/organizations/${orgId}/keys?access_token=${accessToken}`, {
+      json: true
+    })
       .then((data) => {
-        console.log('DONE!', data)
+        expect(data.length).to.equal(1)
+        expect(data[0].keyName).to.equal(keys[0].keyName)
       })
   })
 })

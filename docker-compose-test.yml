@@ -33,6 +33,7 @@ services:
     links:
       - rabbit
       - pg
+      - keymaker
     environment:
       - NODE_ENV=development
       - RABBITMQ_PORT=5672
