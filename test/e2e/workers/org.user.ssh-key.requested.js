@@ -5,7 +5,7 @@ require('dotenv').config({ path: './config/.env' })
 const expect = require('chai').expect
 const Promise = require('bluebird')
 const rabbitmq = require('../../helpers/rabbitmq')
-const SSHKey = require('../../../lib/models/ssh-key')
+const SSHKey = require('../../../lib/models/sshKey')
 
 require('sinon-as-promised')(Promise)
 
@@ -43,6 +43,7 @@ describe('E2E: org.user.ssh-key.requested', () => {
       .then((sshKey) => {
         expect(sshKey.keyName).to.equal(keyName)
         expect(sshKey.githubKeyId).to.equal(68238128)
+        expect(sshKey.githubUserId).to.equal(1)
       })
   })
 })
