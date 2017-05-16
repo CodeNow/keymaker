@@ -1,11 +1,10 @@
 'use strict'
 
 require('dotenv').config({ path: './config/.env' })
-const proxyquire = require('proxyquire')
 
-// const expect = require('chai').expect
 const github = require('../../../lib/util/github')
 const Promise = require('bluebird')
+const proxyquire = require('proxyquire')
 const rabbitmq = require('../../../lib/util/rabbitmq')
 const sinon = require('sinon')
 const SSHKey = require('../../../lib/models/sshKey')
