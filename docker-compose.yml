@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
     command: bash -c "./test/helpers/wait.sh rabbit:5672 -t 30 && ./test/helpers/wait.sh pg:5432 -t 30 && node_modules/.bin/knex-migrate up && npm run start-http"
     links:
-      - vault
       - rabbit
       - pg
     environment:
@@ -27,7 +26,6 @@ services:
       dockerfile: Dockerfile
     command: bash -c "./test/helpers/wait.sh rabbit:5672 -t 30 && ./test/helpers/wait.sh pg:5432 -t 30 && node_modules/.bin/knex-migrate up && npm run start-worker"
     links:
-      - vault
       - rabbit
       - pg
     environment:
@@ -41,16 +39,6 @@ services:
       - POSTGRES_POOL_MIN=1
       - POSTGRES_POOL_MAX=20
       - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
-
-  vault:
-    image: vault:0.6.4
-    cap_add:
-      - IPC_LOCK
-    environment:
-      - VAULT_ADDR=http://0.0.0.0:8200
-      - VAULT_DEV_ROOT_TOKEN_ID=f3b7d5b3-5ebf-4474-a312-bb98e5e240c0
-    ports:
-      - "8200:8200"
 
   rabbit:
     image: rabbitmq:3.4.3-management
