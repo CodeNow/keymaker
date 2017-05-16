@@ -55,7 +55,7 @@ describe('E2E: fetchOrgKeys', () => {
     })
   })
 
-  it('should return only keys that exist in github', function () {
+  it('should return only keys that exist in github and delete ones that dont exist', function () {
     this.timeout(10000)
     return request.get(`http://${process.env.KEYMAKER_HOST}:${process.env.KEYMAKER_PORT}/organizations/${orgId}/keys?access_token=${accessToken}`, {
       json: true
@@ -63,6 +63,16 @@ describe('E2E: fetchOrgKeys', () => {
       .then((data) => {
         expect(data.length).to.equal(1)
         expect(data[0].keyName).to.equal(keys[0].keyName)
+      })
+      .delay(1000) // Delay by a second so we can wait for the DB delete to finish
+      .then(() => {
+        return SSHKey.where({
+          org_id: orgId
+        })
+          .fetchAll()
+          .then((sshKeys) => {
+            expect(sshKeys.length).to.equal(1)
+          })
       })
   })
 })
