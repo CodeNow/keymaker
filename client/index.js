@@ -6,6 +6,14 @@ const defaultOptions = {
 }
 
 module.exports = {
+  /**
+   * Fetch ssh keys
+   * @param {object} options
+   * @param {object.orgId} big poppa org id
+   * @param {object.accessToken} github access token
+   * @returns {Promise}
+   * @resolves {Array<SSHKeys>}
+   */
   fetchSSHKeys: (options) => {
     return request.get(`${baseUrl}organizations/${options.orgId}/keys?access_token=${options.accessToken}`, defaultOptions)
   }
