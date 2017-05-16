@@ -23,7 +23,9 @@ services:
       - GITHUB_VARNISH_PORT=3000
       - LOG_LEVEL=trace
       - PORT=3008
-#      - DEBUG_BOOKSHELF=false
+      # Uncomment if you are having any issues with DB writes/reads from bookshelf, this will print out
+      # all the RAW queries we trigger and is incredibly useful for deep diving during debugging
+      # - DEBUG_BOOKSHELF=false
 
   keymaker_test:
     build:
