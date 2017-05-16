@@ -7,8 +7,8 @@
     "lint": "node_modules/.bin/standard",
     "start": "node index.js",
     "test": "npm run lint && npm run unit && npm run check_coverage && npm run e2e",
-    "unit": "./node_modules/.bin/istanbul cover _mocha -- test/unit --recursive --async-only",
-    "check_coverage": "./node_modules/.bin/istanbul check-coverage --statement 90 --functions 65 --branches 50 --lines 90 && echo 'Coverage check successful!'",
+    "unit": "./node_modules/.bin/istanbul cover _mocha -x lib/util/logger.js -x lib/util/rabbitmq.js -- test/unit --recursive --async-only",
+    "check_coverage": "./node_modules/.bin/istanbul check-coverage --statement 100 --functions 100 --branches 100 --lines 100 && echo 'Coverage check successful!'",
     "e2e": "./node_modules/.bin/mocha test/e2e --recursive --async-only"
   },
   "author": "Ryan Kahn <kahn@runnable.com>",
