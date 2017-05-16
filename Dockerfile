@@ -6,4 +6,4 @@ WORKDIR /keymaker
 RUN npm install
 ADD . /keymaker
 
-CMD npm start
+CMD npm run start-worker
