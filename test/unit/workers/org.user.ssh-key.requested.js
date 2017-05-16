@@ -64,7 +64,7 @@ describe('UNIT: org.user.ssh-key.requested task', () => {
     cb()
   })
 
-  it('should generate and save a public key', () => {
+  it('should generate and save a public key and save it', () => {
     return worker.task(job)
       .then(() => {
         sinon.assert.calledOnce(github.savePublicKey)
@@ -72,9 +72,29 @@ describe('UNIT: org.user.ssh-key.requested task', () => {
         sinon.assert.calledOnce(SSHKey.prototype.where)
         sinon.assert.calledOnce(whereStub.save)
 
-        sinon.assert.calledWith(github.savePublicKey, githubAccessToken, {
+        sinon.assert.calledWithExactly(github.savePublicKey, githubAccessToken, {
           key: publicKey,
           title: keyName
+        })
+
+        sinon.assert.calledWithExactly(rabbitmq.emitOrgUserPrivateKeyCreated, {
+          privateKey: privateKey,
+          orgId,
+          userId
+        })
+
+        sinon.assert.calledWithExactly(SSHKey.prototype.where, {
+          orgId,
+          userId
+        })
+
+        sinon.assert.calledWithExactly(whereStub.save, {
+          githubKeyId: keyData.id,
+          githubUserId: userData.id,
+          keyFingerprint: sinon.match.string,
+          keyName,
+          orgId,
+          userId
         })
       })
   })
