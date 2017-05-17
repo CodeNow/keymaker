@@ -1,6 +1,6 @@
 {
   "name": "keymaker",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Keymaker, in charge of giving access to the doors of our reality.",
   "main": "index.js",
   "scripts": {
