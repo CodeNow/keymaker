@@ -1,0 +1,104 @@
+version: '2'
+services:
+  keymaker_http:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "./test/helpers/wait.sh rabbit:5672 -t 30 && ./test/helpers/wait.sh pg:5432 -t 30 && node_modules/.bin/knex-migrate up && npm run start-http"
+    links:
+      - rabbit
+      - pg
+    environment:
+      - NODE_ENV=development
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOSTNAME=rabbit
+      - POSTGRES_POOL_MIN=1
+      - POSTGRES_POOL_MAX=20
+      - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
+      - GITHUB_TOKEN=testing
+      - GITHUB_PROTOCOL=http
+      - GITHUB_VARNISH_HOST=github
+      - GITHUB_VARNISH_PORT=3000
+      - LOG_LEVEL=trace
+      - PORT=3008
+      # Uncomment if you are having any issues with DB writes/reads from bookshelf, this will print out
+      # all the RAW queries we trigger and is incredibly useful for deep diving during debugging
+      # - DEBUG_BOOKSHELF=false
+
+  keymaker_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "./test/helpers/wait.sh rabbit:5672 -t 30 && ./test/helpers/wait.sh pg:5432 -t 30 && node_modules/.bin/knex-migrate up && npm run start-worker"
+    links:
+      - rabbit
+      - pg
+    environment:
+      - NODE_ENV=development
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOSTNAME=rabbit
+      - POSTGRES_POOL_MIN=1
+      - POSTGRES_POOL_MAX=20
+      - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
+      - GITHUB_TOKEN=testing
+      - GITHUB_PROTOCOL=http
+      - GITHUB_VARNISH_HOST=github
+      - GITHUB_VARNISH_PORT=3000
+      - LOG_LEVEL=trace
+      - PORT=3008
+      # Uncomment if you are having any issues with DB writes/reads from bookshelf, this will print out
+      # all the RAW queries we trigger and is incredibly useful for deep diving during debugging
+      # - DEBUG_BOOKSHELF=false
+
+  keymaker_test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "./test/helpers/wait.sh rabbit:5672 -t 30 && ./test/helpers/wait.sh pg:5432 -t 30 && sleep 5 && npm test"
+    links:
+      - rabbit
+      - pg
+      - keymaker_http
+    environment:
+      - NODE_ENV=development
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOSTNAME=rabbit
+      - POSTGRES_POOL_MIN=1
+      - POSTGRES_POOL_MAX=20
+      - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
+      - KEYMAKER_HOST=keymaker_http
+      - KEYMAKER_PORT=3008
+
+  rabbit:
+    image: rabbitmq:3.4.3-management
+    ports:
+      - "15672:15672"
+
+  rabbitpuppy:
+    image: meltwater/rabbit-puppy:0.3.0
+    links:
+      - rabbit
+    volumes:
+      - ./config:/config
+    command: apply -b http://rabbit:15672/ -u guest -p guest -c /config/rabbit-config.yaml -w 60
+
+  pg:
+    image: postgres:9.6.2
+    environment:
+      - POSTGRES_PASSWORD=keymaker
+      - POSTGRES_USER=keymaker
+    ports:
+      - "5433:5432"
+
+  github:
+    build:
+      context: test/e2e/mocks/github
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

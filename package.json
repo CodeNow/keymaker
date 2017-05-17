@@ -1,0 +1,67 @@
+{
+  "name": "keymaker",
+  "version": "0.0.0",
+  "description": "Keymaker, in charge of giving access to the doors of our reality.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "node_modules/.bin/standard",
+    "start-http": "node lib/http/index.js",
+    "start-worker": "node lib/workers/index.js",
+    "test": "npm run lint && npm run unit && npm run check-coverage && npm run e2e",
+    "unit": "./node_modules/.bin/istanbul cover _mocha -x lib/util/logger.js -x lib/util/rabbitmq.js -- test/unit --recursive --async-only",
+    "check-coverage": "./node_modules/.bin/istanbul check-coverage --statement 100 --functions 100 --branches 100 --lines 100 && echo 'Coverage check successful!'",
+    "e2e": "./node_modules/.bin/mocha test/e2e --recursive --async-only"
+  },
+  "author": "Ryan Kahn <kahn@runnable.com>",
+  "repository": "https://github.com/CodeNow/keymaker",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "6.10.2",
+    "npm": "3.10.10"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach"
+    ]
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "bookshelf": "^0.10.3",
+    "bookshelf-camelcase": "^1.1.4",
+    "bunyan": "^1.8.8",
+    "continuation-local-storage": "^3.2.0",
+    "dotenv": "^4.0.0",
+    "error-cat": "^3.0.0",
+    "express": "^4.15.2",
+    "github": "^9.2.0",
+    "joi": "^9.0.4",
+    "keypair": "^1.0.1",
+    "knex": "0.12.9",
+    "lodash": "^4.17.4",
+    "node-vault": "^0.5.6",
+    "pg": "^6.1.5",
+    "ponos": "^5.8.3",
+    "ssh-fingerprint": "0.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "knex-migrate": "^1.3.0",
+    "mocha": "^3.2.0",
+    "pre-commit": "^1.2.2",
+    "proxyquire": "^1.8.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
+    "sinon": "^1.17.7",
+    "sinon-as-promised": "^4.0.2",
+    "standard": "^10.0.2"
+  },
+  "pre-commit": [
+    "lint"
+  ]
+}
