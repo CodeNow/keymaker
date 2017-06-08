@@ -1,6 +1,6 @@
 version: '2'
 services:
-  keymaker_http:
+  keymaker-http:
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
       - POSTGRES_POOL_MAX=20
       - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
 
-  keymaker_worker:
+  keymaker-worker:
     build:
       context: .
       dockerfile: Dockerfile
