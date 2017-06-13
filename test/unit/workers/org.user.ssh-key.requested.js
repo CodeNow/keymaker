@@ -2,6 +2,7 @@
 
 require('dotenv').config({ path: './config/.env' })
 
+const forge = require('node-forge')
 const github = require('../../../lib/util/github')
 const Promise = require('bluebird')
 const proxyquire = require('proxyquire')
@@ -28,7 +29,8 @@ describe('UNIT: org.user.ssh-key.requested task', () => {
   const userData = {
     id: 'githubUserId' + Math.floor(Math.random() * 100000)
   }
-  const whereStub = {}
+  const stubPublicKeyFromPem = 'public key from pem' + Math.floor(Math.random() * 100000)
+  const stubPublicOpenSSHKey = 'public openSSH key' + Math.floor(Math.random() * 100000)
 
   let job
   beforeEach((cb) => {
@@ -52,42 +54,44 @@ describe('UNIT: org.user.ssh-key.requested task', () => {
       userData
     })
     sinon.stub(rabbitmq, 'emitOrgUserPrivateKeyCreated').resolves()
-    whereStub.save = sinon.stub().resolves()
-    sinon.stub(SSHKey.prototype, 'where').returns(whereStub)
+    sinon.stub(SSHKey.prototype, 'createOrUpdate').resolves()
+    sinon.stub(forge.pki, 'publicKeyFromPem').returns(stubPublicKeyFromPem)
+    sinon.stub(forge.ssh, 'publicKeyToOpenSSH').returns(stubPublicOpenSSHKey)
     cb()
   })
 
   afterEach((cb) => {
     github.savePublicKey.restore()
-    SSHKey.prototype.where.restore()
+    SSHKey.prototype.createOrUpdate.restore()
+    forge.pki.publicKeyFromPem.restore()
+    forge.ssh.publicKeyToOpenSSH.restore()
     cb()
   })
 
   it('should generate and save a public key and save it', () => {
     return worker.task(job)
       .then(() => {
-        sinon.assert.calledOnce(github.savePublicKey)
-        sinon.assert.calledOnce(rabbitmq.emitOrgUserPrivateKeyCreated)
-        sinon.assert.calledOnce(SSHKey.prototype.where)
-        sinon.assert.calledOnce(whereStub.save)
+        sinon.assert.calledOnce(forge.pki.publicKeyFromPem)
+        sinon.assert.calledWithExactly(forge.pki.publicKeyFromPem, publicKey)
 
+        sinon.assert.calledOnce(forge.ssh.publicKeyToOpenSSH)
+        sinon.assert.calledWithExactly(forge.ssh.publicKeyToOpenSSH, stubPublicKeyFromPem, 'support@runnable.com')
+
+        sinon.assert.calledOnce(github.savePublicKey)
         sinon.assert.calledWithExactly(github.savePublicKey, githubAccessToken, {
-          key: publicKey,
+          key: stubPublicOpenSSHKey,
           title: keyName
         })
 
+        sinon.assert.calledOnce(rabbitmq.emitOrgUserPrivateKeyCreated)
         sinon.assert.calledWithExactly(rabbitmq.emitOrgUserPrivateKeyCreated, {
           privateKey: privateKey,
           orgId,
           userId
         })
 
-        sinon.assert.calledWithExactly(SSHKey.prototype.where, {
-          orgId,
-          userId
-        })
-
-        sinon.assert.calledWithExactly(whereStub.save, {
+        sinon.assert.calledOnce(SSHKey.prototype.createOrUpdate)
+        sinon.assert.calledWithExactly(SSHKey.prototype.createOrUpdate, {
           githubKeyId: keyData.id,
           githubUserId: userData.id,
           keyFingerprint: sinon.match.string,

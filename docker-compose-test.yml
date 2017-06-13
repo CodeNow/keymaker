@@ -1,6 +1,6 @@
 version: '2'
 services:
-  keymaker_http:
+  keymaker-http:
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,7 +27,7 @@ services:
       # all the RAW queries we trigger and is incredibly useful for deep diving during debugging
       # - DEBUG_BOOKSHELF=false
 
-  keymaker_worker:
+  keymaker-worker:
     build:
       context: .
       dockerfile: Dockerfile
@@ -54,7 +54,7 @@ services:
       # all the RAW queries we trigger and is incredibly useful for deep diving during debugging
       # - DEBUG_BOOKSHELF=false
 
-  keymaker_test:
+  keymaker-test:
     build:
       context: .
       dockerfile: Dockerfile
@@ -62,7 +62,7 @@ services:
     links:
       - rabbit
       - pg
-      - keymaker_http
+      - keymaker-http
     environment:
       - NODE_ENV=development
       - RABBITMQ_PORT=5672
@@ -72,7 +72,7 @@ services:
       - POSTGRES_POOL_MIN=1
       - POSTGRES_POOL_MAX=20
       - POSTGRES_CONNECT_STRING=postgresql://keymaker:keymaker@pg/keymaker
-      - KEYMAKER_HOST=keymaker_http
+      - KEYMAKER_HOST=keymaker-http
       - KEYMAKER_PORT=3008
 
   rabbit:
